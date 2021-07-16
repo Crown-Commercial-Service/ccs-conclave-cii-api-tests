@@ -643,7 +643,7 @@ public class RegistryDataProvider {
                 schemeInfo.setAdditionalIdentifiers(additionalIdentifiers);
                 break;
 
-            case SALES_FORCE:
+            case SFID_WITH_INVALID_COH_INVALID_DUNS:
                 schemeInfo.setName("Sylvan Corporation"); // Salesforce is only for internal search
                 identifier.setId("001b000003OCdIZAA1~10046880");
                 identifier.setScheme(SchemeRegistry.getSchemeCode(SALES_FORCE));
@@ -719,26 +719,12 @@ public class RegistryDataProvider {
                 schemeInfo.setContactPoint(contactPoint);
                 break;
 
-            case SFID_WITH_VALID_COH_INVALID_DUNS:
-                schemeInfo.setName("placeholder-no data available.");
-                identifier.setId("");
-                identifier.setScheme(SchemeRegistry.getSchemeCode(COMPANIES_HOUSE));
-                identifier.setLegalName("");
-                identifier.setUri("");
+            case SALES_FORCE:
                 schemeInfo.setIdentifier(identifier);
                 break;
 
             case SFID_WITH_VALID_COH_UNKNOWN_DUNS:
                 schemeInfo.setName("placeholder- no data available.");
-                identifier.setId("");
-                identifier.setScheme(SchemeRegistry.getSchemeCode(COMPANIES_HOUSE));
-                identifier.setLegalName("");
-                identifier.setUri("");
-                schemeInfo.setIdentifier(identifier);
-                break;
-
-            case SFID_WITH_INVALID_COH_INVALID_DUNS:
-                schemeInfo.setName("placeholder - no data available.");
                 identifier.setId("");
                 identifier.setScheme(SchemeRegistry.getSchemeCode(COMPANIES_HOUSE));
                 identifier.setLegalName("");

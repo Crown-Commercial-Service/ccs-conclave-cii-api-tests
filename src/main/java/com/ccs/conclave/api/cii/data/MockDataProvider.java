@@ -134,12 +134,12 @@ public class MockDataProvider {
                 schemeInfo.setAdditionalIdentifiers(additionalIdentifiers);
 
                 // Salesforce identifier
-                additionalIdentifier1.setScheme(SchemeRegistry.getSchemeCode(SALES_FORCE));
-                additionalIdentifier1.setId("NSO7IUSHF98HFP9WEH9FHE~56734565539");
-                additionalIdentifier1.setUri("/services/data/v46.0/subjects/Accout/NSO7IUSHF98HFP9WEH9FHE");
-                additionalIdentifier1.setLegalName("Dummy organisation");
-                additionalIdentifier1.setHidden("true");
-                additionalIdentifiers.add(additionalIdentifier1);
+                additionalIdentifier2.setScheme(SchemeRegistry.getSchemeCode(SALES_FORCE));
+                additionalIdentifier2.setId("NSO7IUSHF98HFP9WEH9FHE~56734565539");
+                additionalIdentifier2.setUri("/services/data/v46.0/subjects/Accout/NSO7IUSHF98HFP9WEH9FHE");
+                additionalIdentifier2.setLegalName("Dummy organisation");
+                additionalIdentifier2.setHidden("true");
+                additionalIdentifiers.add(additionalIdentifier2);
                 schemeInfo.setAdditionalIdentifiers(additionalIdentifiers);
 
                 address.setCountryName("Country");
@@ -165,26 +165,27 @@ public class MockDataProvider {
                 identifier.setUri("");
                 schemeInfo.setIdentifier(identifier);
 
-                additionalIdentifier1.setScheme(SchemeRegistry.getSchemeCode(CHARITIES_COMMISSION));
-                additionalIdentifier1.setId("123110");
-                additionalIdentifier1.setUri("http://www.example.org.uk");
-                additionalIdentifier1.setLegalName("Charity Example 123110");
-                additionalIdentifiers.add(additionalIdentifier1);
+// This charities is not expecting as part of response payload as it is a additional Identifier for DUNS
+//                additionalIdentifier1.setScheme(SchemeRegistry.getSchemeCode(CHARITIES_COMMISSION));
+//                additionalIdentifier1.setId("123110");
+//                additionalIdentifier1.setUri("http://www.example.org.uk");
+//                additionalIdentifier1.setLegalName("Charity Example 123110");
+//                additionalIdentifiers.add(additionalIdentifier1);
 
-                additionalIdentifier2.setScheme(SchemeRegistry.getSchemeCode(DUN_AND_BRADSTREET_WITH_COH));
-                additionalIdentifier2.setId("901123456");
-                additionalIdentifier2.setUri("");
-                additionalIdentifier2.setLegalName("Company Example 901123456");
-                additionalIdentifiers.add(additionalIdentifier2);
+                additionalIdentifier1.setScheme(SchemeRegistry.getSchemeCode(DUN_AND_BRADSTREET_WITH_COH));
+                additionalIdentifier1.setId("901123456");
+                additionalIdentifier1.setUri("");
+                additionalIdentifier1.setLegalName("Company Example 901123456");
+                additionalIdentifiers.add(additionalIdentifier1);
                 schemeInfo.setAdditionalIdentifiers(additionalIdentifiers);
 
                 // Salesforce identifier
-                additionalIdentifier3.setScheme(SchemeRegistry.getSchemeCode(SALES_FORCE));
-                additionalIdentifier3.setId("NSO7IUSHF98HFP9WEG9HGG~56734561236");
-                additionalIdentifier3.setUri("/services/data/v45.0/sobjects/Account/001b000003YNthvAAD");
-                additionalIdentifier3.setLegalName("CHAIGELEY EDUCATIONAL FOUNDATION");
-                additionalIdentifier3.setHidden("true");
-                additionalIdentifiers.add(additionalIdentifier3);
+                additionalIdentifier2.setScheme(SchemeRegistry.getSchemeCode(SALES_FORCE));
+                additionalIdentifier2.setId("NSO7IUSHF98HFP9WEG9HGG~56734561236");
+                additionalIdentifier2.setUri("/services/data/v46.0/subjects/Accout/NSO7IUSHF98HFP9WEG9HGG");
+                additionalIdentifier2.setLegalName("Dummy organisation");
+                additionalIdentifier2.setHidden("true");
+                additionalIdentifiers.add(additionalIdentifier2);
                 schemeInfo.setAdditionalIdentifiers(additionalIdentifiers);
 
                 address.setCountryName("Country");
@@ -667,10 +668,20 @@ public class MockDataProvider {
                 schemeInfo.setAdditionalIdentifiers(additionalIdentifiers);
                 break;
 
+            case SFID_WITH_INVALID_COH_INVALID_DUNS:
+                schemeInfo.setIdentifier(identifier);
+
+                additionalIdentifier1.setScheme(SchemeRegistry.getSchemeCode(SALES_FORCE));
+                additionalIdentifier1.setId("NSO7IUSHF98HFP9WEH9YUR~56734565907");
+                additionalIdentifier1.setUri("/services/data/v46.0/subjects/Accout/NSO7IUSHF98HFP9WEH9YUR");
+                additionalIdentifier1.setLegalName("Dummy organisation");
+                additionalIdentifier1.setHidden("true");
+                additionalIdentifiers.add(additionalIdentifier1);
+                schemeInfo.setAdditionalIdentifiers(additionalIdentifiers);
+                break;
+
+
             case SALES_FORCE:
-                schemeInfo.setName("Dummy data"); // Salesforce is only for internal search
-                identifier.setId("");
-                identifier.setHidden("true");
                 schemeInfo.setIdentifier(identifier);
                 break;
 
@@ -803,29 +814,29 @@ public class MockDataProvider {
                 schemeInfo.setContactPoint(contactPoint);
                 break;
 
-            case SFID_WITH_INVALID_COH_INVALID_DUNS:
-                // Salesforce identifier
-                additionalIdentifier1.setScheme(SchemeRegistry.getSchemeCode(SALES_FORCE));
-                additionalIdentifier1.setId("NSO7IUSHF98HFP9WEH9YUR~56734565467");
-                additionalIdentifier1.setUri("/services/data/v46.0/subjects/Accout/NSO7IUSHF98HFP9WEH9YUR");
-                additionalIdentifier1.setLegalName("Dummy organisation");
-                additionalIdentifiers.add(additionalIdentifier1);
-                schemeInfo.setAdditionalIdentifiers(additionalIdentifiers);
-
-                address.setCountryName("");
-                address.setLocality("");
-                address.setPostalCode("");
-                address.setRegion("");
-                address.setStreetAddress("");
-                schemeInfo.setAddress(address);
-
-                contactPoint.setName("");
-                contactPoint.setEmail("");
-                contactPoint.setFaxNumber("");
-                contactPoint.setTelephone("");
-                contactPoint.setUri("");
-                schemeInfo.setContactPoint(contactPoint);
-                break;
+//            case SFID_WITH_INVALID_COH_INVALID_DUNS:
+//                // Salesforce identifier
+//                additionalIdentifier1.setScheme(SchemeRegistry.getSchemeCode(SALES_FORCE));
+//                additionalIdentifier1.setId("NSO7IUSHF98HFP9WEH9YUR~56734565467");
+//                additionalIdentifier1.setUri("/services/data/v46.0/subjects/Accout/NSO7IUSHF98HFP9WEH9YUR");
+//                additionalIdentifier1.setLegalName("Dummy organisation");
+//                additionalIdentifiers.add(additionalIdentifier1);
+//                schemeInfo.setAdditionalIdentifiers(additionalIdentifiers);
+//
+//                address.setCountryName("");
+//                address.setLocality("");
+//                address.setPostalCode("");
+//                address.setRegion("");
+//                address.setStreetAddress("");
+//                schemeInfo.setAddress(address);
+//
+//                contactPoint.setName("");
+//                contactPoint.setEmail("");
+//                contactPoint.setFaxNumber("");
+//                contactPoint.setTelephone("");
+//                contactPoint.setUri("");
+//                schemeInfo.setContactPoint(contactPoint);
+//                break;
 
             case SFID_WITH_DUNS_CHC_NO_COH:
                 schemeInfo.setName("Company Example 011122333");
@@ -870,12 +881,14 @@ public class MockDataProvider {
                 throw new IllegalStateException("Unexpected value: " + schemeRegistry);
         }
 
-        String ccsOrgId = RequestTestEndpoints.getRegisteredOrgId(schemeInfo.getIdentifier().getId());
-        // Delete Database entry if the Org. is already registered
-        deleteOrganisation(ccsOrgId);
-        for (Identifier id : schemeInfo.getAdditionalIdentifiers()) {
-            ccsOrgId = RequestTestEndpoints.getRegisteredOrgId(id.getId());
+        if(!(schemeInfo.getIdentifier().getId() == null)) {
+            String ccsOrgId = RequestTestEndpoints.getRegisteredOrgId(schemeInfo.getIdentifier().getId());
+            // Delete Database entry if the Org. is already registered
             deleteOrganisation(ccsOrgId);
+            for (Identifier id : schemeInfo.getAdditionalIdentifiers()) {
+                ccsOrgId = RequestTestEndpoints.getRegisteredOrgId(id.getId());
+                deleteOrganisation(ccsOrgId);
+            }
         }
 
         return schemeInfo;
