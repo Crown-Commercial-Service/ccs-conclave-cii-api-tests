@@ -42,7 +42,7 @@ public class DataMigrationPostEndpointTests extends BaseClass {
 
         expectedSchemeInfo.setAdditionalIdentifiers(schemeInfo.getAdditionalIdentifiers());
         expectedSchemeInfo.getAdditionalIdentifiers().get(0).setHidden("true");
-        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgId(postSchemeRes));
+        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgIdFromDataMigrationEndpoint(postSchemeRes));
         verifyAllRegisteredSchemes(registeredSchemesRes, expectedSchemeInfo);
 
         // Duplicate check
@@ -69,7 +69,7 @@ public class DataMigrationPostEndpointTests extends BaseClass {
 
         expectedSchemeInfo.setAdditionalIdentifiers(schemeInfo.getAdditionalIdentifiers());
         expectedSchemeInfo.getAdditionalIdentifiers().get(0).setHidden("true");
-        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgId(postSchemeRes));
+        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgIdFromDataMigrationEndpoint(postSchemeRes));
         verifyAllRegisteredSchemes(registeredSchemesRes, expectedSchemeInfo);
     }
 
@@ -93,7 +93,7 @@ public class DataMigrationPostEndpointTests extends BaseClass {
 
         expectedSchemeInfo.getAdditionalIdentifiers().add(schemeInfo.getAdditionalIdentifiers().get(1));
         expectedSchemeInfo.getAdditionalIdentifiers().get(1).setHidden("true");
-        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgId(postSchemeRes));
+        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgIdFromDataMigrationEndpoint(postSchemeRes));
         verifyAllRegisteredSchemes(registeredSchemesRes, expectedSchemeInfo);
     }
 
@@ -119,7 +119,7 @@ public class DataMigrationPostEndpointTests extends BaseClass {
 
         expectedSchemeInfo.getAdditionalIdentifiers().add(schemeInfo.getAdditionalIdentifiers().get(2));
         expectedSchemeInfo.getAdditionalIdentifiers().get(2).setHidden("true");
-        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgId(postSchemeRes));
+        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgIdFromDataMigrationEndpoint(postSchemeRes));
         verifyAllRegisteredSchemes(registeredSchemesRes, expectedSchemeInfo);
     }
 
@@ -152,7 +152,7 @@ public class DataMigrationPostEndpointTests extends BaseClass {
         expectedSchemeInfo.getAdditionalIdentifiers().add(schemeInfo.getIdentifier());
         expectedSchemeInfo.getAdditionalIdentifiers().get(0).setHidden("true");
 
-        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgId(postSchemeRes));
+        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgIdFromDataMigrationEndpoint(postSchemeRes));
         verifyAllRegisteredSchemes(registeredSchemesRes, expectedSchemeInfo);
     }
 
@@ -174,7 +174,7 @@ public class DataMigrationPostEndpointTests extends BaseClass {
 
         expectedSchemeInfo.getAdditionalIdentifiers().add(schemeInfo.getIdentifier());
         expectedSchemeInfo.getAdditionalIdentifiers().get(0).setHidden("true");
-        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgId(postSchemeRes));
+        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgIdFromDataMigrationEndpoint(postSchemeRes));
         verifyAllRegisteredSchemes(registeredSchemesRes, expectedSchemeInfo);
     }
 
@@ -196,7 +196,7 @@ public class DataMigrationPostEndpointTests extends BaseClass {
 
         expectedSchemeInfo.getAdditionalIdentifiers().add(schemeInfo.getIdentifier());
         expectedSchemeInfo.getAdditionalIdentifiers().get(0).setHidden("true");
-        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgId(postSchemeRes));
+        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgIdFromDataMigrationEndpoint(postSchemeRes));
         verifyAllRegisteredSchemes(registeredSchemesRes, expectedSchemeInfo);
     }
 
@@ -218,7 +218,7 @@ public class DataMigrationPostEndpointTests extends BaseClass {
 
         expectedSchemeInfo.getAdditionalIdentifiers().add(schemeInfo.getIdentifier());
         expectedSchemeInfo.getAdditionalIdentifiers().get(0).setHidden("true");
-        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgId(postSchemeRes));
+        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgIdFromDataMigrationEndpoint(postSchemeRes));
         verifyAllRegisteredSchemes(registeredSchemesRes, expectedSchemeInfo);
     }
 
@@ -240,7 +240,7 @@ public class DataMigrationPostEndpointTests extends BaseClass {
 
         expectedSchemeInfo.getAdditionalIdentifiers().add(schemeInfo.getIdentifier());
         expectedSchemeInfo.getAdditionalIdentifiers().get(0).setHidden("true");
-        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgId(postSchemeRes));
+        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgIdFromDataMigrationEndpoint(postSchemeRes));
         verifyAllRegisteredSchemes(registeredSchemesRes, expectedSchemeInfo);
     }
 
@@ -264,7 +264,7 @@ public class DataMigrationPostEndpointTests extends BaseClass {
 
         expectedSchemeInfo.getAdditionalIdentifiers().add(schemeInfo.getIdentifier());
         expectedSchemeInfo.getAdditionalIdentifiers().get(0).setHidden("true");
-        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgId(postSchemeRes));
+        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgIdFromDataMigrationEndpoint(postSchemeRes));
         verifyAllRegisteredSchemes(registeredSchemesRes, expectedSchemeInfo);
     }
 
@@ -281,6 +281,89 @@ public class DataMigrationPostEndpointTests extends BaseClass {
 
         postSchemeRes = RestRequests.postSFInfo("sfID", "10590792");
         verifyBadRequestResponse(postSchemeRes);
+    }
+
+    @Test
+    public void postSFInfo_using_DUNS() {
+        SchemeInfo schemeInfo = getExpectedSchemeInfo(DUN_AND_BRADSTREET_WITH_COH);
+
+        // Perform Post Operation
+        Response postSchemeRes = RestRequests.postSFInfo(getSchemeCode(DUN_AND_BRADSTREET), schemeInfo.getIdentifier().getId());
+
+        // COH is Primary:true
+        SchemeInfo expectedSchemeInfo = schemeInfo;
+        expectedSchemeInfo.getIdentifier().setHidden("false");
+        expectedSchemeInfo.getAdditionalIdentifiers().get(0).setHidden("false");
+        expectedSchemeInfo.getAdditionalIdentifiers().get(1).setHidden("true");
+        verifyPostDataMigrationEndpointResponse(expectedSchemeInfo, postSchemeRes); // verify the hidden:false ids
+        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgIdFromDataMigrationEndpoint(postSchemeRes));
+        verifyAllRegisteredSchemes(registeredSchemesRes, expectedSchemeInfo);
+    }
+
+    @Test
+    public void postSFInfo_using_COH() {
+        SchemeInfo schemeInfo = getExpectedSchemeInfo(COMPANIES_HOUSE);
+
+        // Perform Post Operation
+        Response postSchemeRes = RestRequests.postSFInfo(getSchemeCode(COMPANIES_HOUSE), schemeInfo.getIdentifier().getId());
+
+        // COH is Primary:true
+        SchemeInfo expectedSchemeInfo = schemeInfo;
+        expectedSchemeInfo.getIdentifier().setHidden("false");
+        expectedSchemeInfo.getAdditionalIdentifiers().get(0).setHidden("true");
+        verifyPostDataMigrationEndpointResponse(expectedSchemeInfo, postSchemeRes); // verify the hidden:false ids
+        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgIdFromDataMigrationEndpoint(postSchemeRes));
+        verifyAllRegisteredSchemes(registeredSchemesRes, expectedSchemeInfo);
+    }
+
+    @Test
+    public void postSFInfo_using_NIC() {
+        SchemeInfo schemeInfo = getExpectedSchemeInfo(NORTHERN_CHARITY_WITH_COH);
+
+        // Perform Post Operation
+        Response postSchemeRes = RestRequests.postSFInfo(getSchemeCode(NORTHERN_CHARITY), schemeInfo.getIdentifier().getId());
+
+        // NIC is Primary:true
+        SchemeInfo expectedSchemeInfo = schemeInfo;
+        expectedSchemeInfo.getIdentifier().setHidden("false");
+        expectedSchemeInfo.getAdditionalIdentifiers().get(0).setHidden("false");
+        verifyPostDataMigrationEndpointResponse(expectedSchemeInfo, postSchemeRes); // verify the hidden:false ids
+        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgIdFromDataMigrationEndpoint(postSchemeRes));
+        verifyAllRegisteredSchemes(registeredSchemesRes, expectedSchemeInfo);
+    }
+
+    @Test
+    public void postSFInfo_using_CHC() {
+        SchemeInfo schemeInfo = getExpectedSchemeInfo(CHARITIES_COMMISSION_WITH_COH_AND_SC);
+
+        // Perform Post Operation
+        Response postSchemeRes = RestRequests.postSFInfo(getSchemeCode(CHARITIES_COMMISSION), schemeInfo.getIdentifier().getId());
+
+        // NIC is Primary:true
+        SchemeInfo expectedSchemeInfo = schemeInfo;
+        expectedSchemeInfo.getIdentifier().setHidden("false");
+        expectedSchemeInfo.getAdditionalIdentifiers().get(0).setHidden("false");
+        expectedSchemeInfo.getAdditionalIdentifiers().get(1).setHidden("false");
+        verifyPostDataMigrationEndpointResponse(expectedSchemeInfo, postSchemeRes); // verify the hidden:false ids
+        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgIdFromDataMigrationEndpoint(postSchemeRes));
+        verifyAllRegisteredSchemes(registeredSchemesRes, expectedSchemeInfo);
+    }
+
+    @Test
+    public void postSFInfo_using_SC() {
+        SchemeInfo schemeInfo = getExpectedSchemeInfo(SCOTLAND_CHARITY_WITH_CHC_COH);
+
+        // Perform Post Operation
+        Response postSchemeRes = RestRequests.postSFInfo(getSchemeCode(SCOTLAND_CHARITY_WITH_CHC_COH), schemeInfo.getIdentifier().getId());
+
+        // NIC is Primary:true
+        SchemeInfo expectedSchemeInfo = schemeInfo;
+        expectedSchemeInfo.getIdentifier().setHidden("false");
+        expectedSchemeInfo.getAdditionalIdentifiers().get(0).setHidden("false");
+        expectedSchemeInfo.getAdditionalIdentifiers().get(1).setHidden("false");
+        verifyPostDataMigrationEndpointResponse(expectedSchemeInfo, postSchemeRes); // verify the hidden:false ids
+        Response registeredSchemesRes = getAllRegisteredSchemesInfo(getCCSOrgIdFromDataMigrationEndpoint(postSchemeRes));
+        verifyAllRegisteredSchemes(registeredSchemesRes, expectedSchemeInfo);
     }
 }
 
