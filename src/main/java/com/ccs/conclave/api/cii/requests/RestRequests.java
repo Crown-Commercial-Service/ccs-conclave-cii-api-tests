@@ -107,8 +107,8 @@ public class RestRequests extends BaseClass {
         return postToCIIAPI(endpoint, requestPayload);
     }
 
-    public static Response postSFInfo(String accountIdType, String accountId) {
-        String endpoint = ciiBaseURI + Endpoints.postRegisterBuyerURI + "account_id_type=" + accountIdType + "&account_id=" + accountId;
+    public static Response postSFInfo(String scheme, String id) {
+        String endpoint = ciiBaseURI + Endpoints.postRegisterBuyerURI + "schemes=" + scheme + "&identifiers=" + id;
         return postSFInfoToCII(endpoint);
     }
 
