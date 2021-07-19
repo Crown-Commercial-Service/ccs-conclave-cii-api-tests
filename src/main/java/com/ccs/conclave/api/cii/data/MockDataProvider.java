@@ -668,7 +668,7 @@ public class MockDataProvider {
                 schemeInfo.setAdditionalIdentifiers(additionalIdentifiers);
                 break;
 
-            case SFID_WITH_INVALID_COH_INVALID_DUNS:
+            case SFID_WITH_NO_COH_NO_DUNS:
                 schemeInfo.setIdentifier(identifier);
 
                 additionalIdentifier1.setScheme(SchemeRegistry.getSchemeCode(SALES_FORCE));
@@ -813,30 +813,6 @@ public class MockDataProvider {
                 contactPoint.setUri("");
                 schemeInfo.setContactPoint(contactPoint);
                 break;
-
-//            case SFID_WITH_INVALID_COH_INVALID_DUNS:
-//                // Salesforce identifier
-//                additionalIdentifier1.setScheme(SchemeRegistry.getSchemeCode(SALES_FORCE));
-//                additionalIdentifier1.setId("NSO7IUSHF98HFP9WEH9YUR~56734565467");
-//                additionalIdentifier1.setUri("/services/data/v46.0/subjects/Accout/NSO7IUSHF98HFP9WEH9YUR");
-//                additionalIdentifier1.setLegalName("Dummy organisation");
-//                additionalIdentifiers.add(additionalIdentifier1);
-//                schemeInfo.setAdditionalIdentifiers(additionalIdentifiers);
-//
-//                address.setCountryName("");
-//                address.setLocality("");
-//                address.setPostalCode("");
-//                address.setRegion("");
-//                address.setStreetAddress("");
-//                schemeInfo.setAddress(address);
-//
-//                contactPoint.setName("");
-//                contactPoint.setEmail("");
-//                contactPoint.setFaxNumber("");
-//                contactPoint.setTelephone("");
-//                contactPoint.setUri("");
-//                schemeInfo.setContactPoint(contactPoint);
-//                break;
 
             case SFID_WITH_DUNS_CHC_NO_COH:
                 schemeInfo.setName("Company Example 011122333");

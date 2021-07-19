@@ -126,7 +126,7 @@ public class DataMigrationPostEndpointTests extends BaseClass {
 
     @Test
     public void postSFInfo_using_SFURN_has_No_DUNS_or_COH() {
-        SchemeInfo schemeInfo = getExpectedSchemeInfo(SFID_WITH_INVALID_COH_INVALID_DUNS);
+        SchemeInfo schemeInfo = getExpectedSchemeInfo(SFID_WITH_NO_COH_NO_DUNS);
 
         String sfId = getSFId(schemeInfo.getAdditionalIdentifiers().get(0).getId());
 

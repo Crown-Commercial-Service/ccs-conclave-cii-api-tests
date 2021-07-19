@@ -643,7 +643,7 @@ public class RegistryDataProvider {
                 schemeInfo.setAdditionalIdentifiers(additionalIdentifiers);
                 break;
 
-            case SFID_WITH_INVALID_COH_INVALID_DUNS:
+            case SFID_WITH_NO_COH_NO_DUNS:
                 schemeInfo.setName("Sylvan Corporation"); // Salesforce is only for internal search
                 identifier.setId("001b000003OCdIZAA1~10046880");
                 identifier.setScheme(SchemeRegistry.getSchemeCode(SALES_FORCE));
