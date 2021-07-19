@@ -23,7 +23,7 @@ public enum SchemeRegistry {
     SFID_WITH_VALID_DUNS_UNKNOWN_COH("US-DUN", "Dun & Bradstreet",  "US"),
     SFID_WITH_VALID_COH_INVALID_DUNS("GB-COH", "Companies House",  "GB"),
     SFID_WITH_VALID_COH_UNKNOWN_DUNS("GB-COH", "Companies House",  "GB"),
-    SFID_WITH_INVALID_COH_INVALID_DUNS("GB-COH", "Companies House",  "GB"),
+    SFID_WITH_NO_COH_NO_DUNS("GB-COH", "Companies House",  "GB"),
     SFID_WITH_DUNS_CHC_NO_COH("US-DUN", "Dun & Bradstreet",  "US"),
     INVALID_SCHEME("GB-XYZ", "",  "");
 
