@@ -48,26 +48,19 @@ public class RestRequests extends BaseClass {
 
     public static Response getSchemeInfo(SchemeRegistry scheme, String identifier) {
         String path = getBaseURI() + Endpoints.getSchemeInfoURI;
-        if (isMockTestEnabled()) {
-            path += "scheme=" + getSchemeCode(scheme) + "&id=" + identifier;
-        } else {
-            path = path.replace("{{scheme-id}}", getSchemeCode(scheme));
-            path = path.replace("{{identifier-id}}", identifier);
-        }
+        path = path.replace("{{scheme-id}}", getSchemeCode(scheme));
+        path = path.replace("{{identifier-id}}", identifier);
+
         logger.info("getSchemeInfo Endpoint: " + path);
         return get(path);
     }
 
     public static Response manageIdentifiers(SchemeRegistry scheme, String identifier, String ccsOrgId) {
         String path = getBaseURI() + Endpoints.adminGetSchemeInfoURI;
-        if(isMockTestEnabled()) {
-            path = "scheme=" + getSchemeCode(scheme) + "&id=" + identifier
-                    + "&ccs_org_id=" + ccsOrgId + "&clientid=" + getClientId();
-        } else {
-            path = path.replace("{{ccs_org_id}}", ccsOrgId);
-            path = path.replace("{{scheme-id}}", getSchemeCode(scheme));
-            path = path.replace("{{identifier-id}}", identifier);
-        }
+        path = path.replace("{{ccs_org_id}}", ccsOrgId);
+        path = path.replace("{{scheme-id}}", getSchemeCode(scheme));
+        path = path.replace("{{identifier-id}}", identifier);
+
         logger.info("admin GetSchemeInfo Endpoint: " + path);
         String accessToken = RequestTestEndpoints.getAccessToken(ccsOrgId);
         return getEndpointWithAccessToken(path, accessToken);
@@ -75,22 +68,16 @@ public class RestRequests extends BaseClass {
 
     public static Response getRegisteredSchemesInfo(String ccsOrgId) {
         String path = getBaseURI() + Endpoints.getRegisteredSchemesURI;
-        if(isMockTestEnabled()) {
-            path += "ccs_org_id=" + ccsOrgId;
-        } else {
-            path = path.replace("{{ccs_org_id}}", ccsOrgId);
-        }
+        path = path.replace("{{ccs_org_id}}", ccsOrgId);
+
         logger.info("get RegisteredSchemeInfo Endpoint: " + path);
         return get(path);
     }
 
     public static Response getAllRegisteredSchemesInfo(String ccsOrgId) {
         String path = getBaseURI() + Endpoints.getAllRegisteredSchemesURI;
-        if(isMockTestEnabled()) {
-            path += "ccs_org_id=" + ccsOrgId + "&clientid=" + getClientId();
-        } else {
-            path = path.replace("{{ccs_org_id}}", ccsOrgId);
-        }
+        path = path.replace("{{ccs_org_id}}", ccsOrgId);
+
         logger.info("get All RegisteredSchemeInfo Endpoint: " + path);
         String accessToken = RequestTestEndpoints.getAccessToken(ccsOrgId);
         return getEndpointWithAccessToken(path, accessToken);
@@ -126,11 +113,7 @@ public class RestRequests extends BaseClass {
     public static void deleteOrganisation(String ccsOrgId) {
         if (!ccsOrgId.isEmpty()) {
             String path = getBaseURI() + Endpoints.deleteOrganisationURI;
-            if (isMockTestEnabled()) {
-                path += "ccs_org_id=" + ccsOrgId;
-            } else {
-                path = path.replace("{{ccs_org_id}}", ccsOrgId);
-            }
+            path = path.replace("{{ccs_org_id}}", ccsOrgId);
             Response response = RestRequests.deleteAll(path);
             Assert.assertEquals(response.getStatusCode(), OK.getCode(), "Something went wrong while deleting existing organisation!");
             logger.info("Successfully deleted registered organisation.");
@@ -208,55 +191,35 @@ public class RestRequests extends BaseClass {
     public static Response put(AdditionalSchemeInfo requestPayload, String accessToken) {
         String path = getBaseURI() + Endpoints.updateSchemeURI;
         Response res;
-        if (isMockTestEnabled()) {
-            res = given().header("x-api-key", apiToken)
-                    .header("Authorization", "Bearer " + accessToken)
-                    .param("ccs_org_id", requestPayload.getCcsOrgId())
-                    .param("identifier[scheme]", requestPayload.getIdentifier().getScheme())
-                    .param("identifier[id]", requestPayload.getIdentifier().getId())
-                    .param("clientid", clientId)
-                    .when().put(path);
-        } else {
-            path = path.replace("{{ccs_org_id}}", requestPayload.getCcsOrgId());
-            path = path.replace("{{scheme-id}}", requestPayload.getIdentifier().getScheme());
-            path = path.replace("{{identifier-id}}", requestPayload.getIdentifier().getId());
-            res = given().header("x-api-key", apiToken)
-                    .header("Authorization", "Bearer " + accessToken)
-                    .when().put(path);
-        }
+        path = path.replace("{{ccs_org_id}}", requestPayload.getCcsOrgId());
+        path = path.replace("{{scheme-id}}", requestPayload.getIdentifier().getScheme());
+        path = path.replace("{{identifier-id}}", requestPayload.getIdentifier().getId());
+        res = given().header("x-api-key", apiToken)
+                .header("Authorization", "Bearer " + accessToken)
+                .when().put(path);
         logger.info("RestRequests::put() call with status code: " + res.getStatusCode());
         return res;
     }
 
     public static Response delete(String path, AdditionalSchemeInfo requestPayload, String accessToken) {
         Response res;
-        if (isMockTestEnabled()) {
-            res = given().header("x-api-key", apiToken)
-                    .header("Authorization", "Bearer " + accessToken)
-                    .param("ccs_org_id", requestPayload.getCcsOrgId())
-                    .param("identifier[scheme]", requestPayload.getIdentifier().getScheme())
-                    .param("identifier[id]", requestPayload.getIdentifier().getId())
-                    .param("clientid", clientId)
-                    .body(requestPayload).when().delete(path);
-        } else {
-            path = path.replace("{{ccs_org_id}}", requestPayload.getCcsOrgId());
-            path = path.replace("{{scheme-id}}", requestPayload.getIdentifier().getScheme());
-            path = path.replace("{{identifier-id}}", requestPayload.getIdentifier().getId());
-            res = given().header("x-api-key", apiToken)
-                    .header("Authorization", "Bearer " + accessToken)
-                    .when().delete(path);
-        }
+        path = path.replace("{{ccs_org_id}}", requestPayload.getCcsOrgId());
+        path = path.replace("{{scheme-id}}", requestPayload.getIdentifier().getScheme());
+        path = path.replace("{{identifier-id}}", requestPayload.getIdentifier().getId());
+        res = given().header("x-api-key", apiToken)
+                .header("Authorization", "Bearer " + accessToken)
+                .when().delete(path);
         logger.info("RestRequests::delete() call with status code: " + res.getStatusCode());
         return res;
     }
 
     public static Response deleteAll(String path) {
         Response res;
-        if(isMockTestEnabled())
-            res = given().header("x-api-key", apiToken).expect().defaultParser(Parser.JSON).when().delete(path);
-        else
+        if (isMockTestEnabled()) {
+            res = given().header("x-api-key", apiToken ).expect().defaultParser(Parser.JSON).when().delete(path);
+        } else {
             res = given().header("x-api-key", deleteToken).expect().defaultParser(Parser.JSON).when().delete(path);
-
+        }
         logger.info("RestRequests::deleteAll() call with status code: " + res.getStatusCode());
         return res;
     }
