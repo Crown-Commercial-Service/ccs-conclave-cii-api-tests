@@ -88,6 +88,30 @@ public class ManageIdentifiersTests extends BaseClass {
         verifyManageIdentifiersResponse(expectedRes, response);
     }
 
+    @Test(description = "organisation admin searching valid identifier which is not as" +
+            " part of his org and is already registered")
+    public void manageIdsGetSchemeInfoWithRegisteredIdentifierNotPartOfOrg() {
+        // Register Primary Identifier without additional
+        SchemeInfo schemeInfo = getExpSchemeInfoWithoutSFIdentifier(SCOTLAND_CHARITY_WITH_CHC_COH);
+
+        Response getSchemeRes = getSchemeInfo(SCOTLAND_CHARITY_WITH_CHC_COH, schemeInfo.getIdentifier().getId());
+        verifyResponseCodeForSuccess(getSchemeRes);
+
+        Response postSchemeInfoRes = RestRequests.postSchemeInfo(getSchemeRes.asString());
+        verifyPostSchemeInfoResponse(schemeInfo, postSchemeInfoRes);
+        logger.info("Successfully registered organisation...");
+
+        // ****Register another organisation***
+        SchemeInfo expectedSchemeInfo = getExpectedSchemeInfo(COMPANIES_HOUSE);
+        getSchemeRes = getSchemeInfo(COMPANIES_HOUSE, expectedSchemeInfo.getIdentifier().getId());
+        Response postSchemeRes = RestRequests.postSchemeInfo(getSchemeRes.asString());
+        verifyResponseCodeForCreatedResource(postSchemeRes);
+
+        Response response = RestRequests.manageIdentifiers(COMPANIES_HOUSE,
+                expectedSchemeInfo.getIdentifier().getId(), getCCSOrgId());
+        verifyResponseCodeForDuplicateResource(response);
+    }
+
     @Test(description = "Negative Scenarios to verify status code")
     public void manageIdsGetSchemeInfoWithInvalidIdentifierOrSchemeOrOrgId() {
         SchemeInfo schemeInfo = getExpSchemeInfoWithoutSFIdentifier(DUN_AND_BRADSTREET_WALES);

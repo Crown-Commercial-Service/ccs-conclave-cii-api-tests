@@ -177,7 +177,7 @@ public class DeleteSchemeTests extends BaseClass {
         deleteOrganisation(getCCSOrgId());
     }
 
-    // @Test CON-851
+    @Test //CON-851
     public void deleteScheme_PrimaryIdentifier() {
         SchemeInfo schemeInfo = getExpSchemeInfoWithoutSFIdentifier(SCOTLAND_CHARITY_WITH_CHC_COH);
 
