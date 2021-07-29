@@ -1,6 +1,7 @@
 package com.ccs.conclave.api.cii.tests;
 
 import com.ccs.conclave.api.cii.pojo.AdditionalSchemeInfo;
+import com.ccs.conclave.api.cii.pojo.Identifier;
 import com.ccs.conclave.api.cii.pojo.SchemeInfo;
 import com.ccs.conclave.api.cii.requests.RestRequests;
 import com.ccs.conclave.api.common.BaseClass;
@@ -10,6 +11,7 @@ import org.testng.Assert;
 import org.testng.SkipException;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.ccs.conclave.api.cii.data.OrgDataProvider.*;
@@ -23,7 +25,7 @@ public class SFHiddenIdentifierTests extends BaseClass {
     private final static Logger logger = Logger.getLogger(SFHiddenIdentifierTests.class);
 
     @Test
-    public void verifyPostWithSFIdentifierForPrimaryId() {
+    public void verifyPostWithIdentifierHasSFId() {
         SchemeInfo expectedSchemeInfo = getExpectedSchemeInfo(COMPANIES_HOUSE);
 
         SchemeInfo expectedRegisteredSchemeInfo = getExpSchemeInfoWithoutSFIdentifier(COMPANIES_HOUSE);
@@ -91,10 +93,10 @@ public class SFHiddenIdentifierTests extends BaseClass {
         if(isMockTestEnabled()) {
             SchemeInfo expectedSchemeInfo = getExpectedSchemeInfo(DUN_AND_BRADSTREET_WITH_COH_WITH_DIFF_SF_ID);
 
-            SchemeInfo expectedRegisteredSchemeInfo = getExpSchemeInfoWithoutSFIdentifier(DUN_AND_BRADSTREET_WITH_COH_WITH_DIFF_SF_ID);
+            SchemeInfo expectedRegisteredSchemeInfo = getExpSchemeInfoWithoutAddIdentifiers(DUN_AND_BRADSTREET_WITH_COH_WITH_DIFF_SF_ID);
 
-            List<AdditionalSchemeInfo> additionalSchemesInfo = getExpSchemeInfoWithOnlyAddIdentifiersIncludeSF(SCOTLAND_CHARITY_WITH_CHC_COH);
-            Assert.assertEquals(additionalSchemesInfo.size(), 5, "Two additional identifier are expected, please check the test data!");
+            List<AdditionalSchemeInfo> additionalSchemesInfo = getExpSchemeInfoWithOnlyAddIdentifiersIncludeSF(DUN_AND_BRADSTREET_WITH_COH_WITH_DIFF_SF_ID);
+            Assert.assertEquals(additionalSchemesInfo.size(), 5, "3 additional identifier are expected, please check the test data!");
 
             // Perform Get call to form the request payload for POST call
             String getSchemeRes = getSchemeInfoWithoutAddIdentifierSection(DUN_AND_BRADSTREET_WITH_COH_WITH_DIFF_SF_ID);
@@ -104,37 +106,55 @@ public class SFHiddenIdentifierTests extends BaseClass {
 
             logger.info("Verify additional identifiers + first SF Ids is registered as inactive..");
             Response allRegisteredIdsRes = getAllRegisteredSchemesInfo(getCCSOrgId());
-            expectedSchemeInfo.getAdditionalIdentifiers().get(0).setHidden("true");
-            expectedSchemeInfo.getAdditionalIdentifiers().get(1).setHidden("true");
-            expectedSchemeInfo.getAdditionalIdentifiers().get(2).setHidden("true");
-            verifyAllRegisteredSchemes(allRegisteredIdsRes, expectedSchemeInfo);
 
-            // Add/Update additional identifier
+            SchemeInfo newExpSchemeInfo = new SchemeInfo();
+            newExpSchemeInfo.setIdentifier(expectedSchemeInfo.getIdentifier());
+
+            List<Identifier> addIds = new ArrayList<>();
+            addIds.add(expectedSchemeInfo.getAdditionalIdentifiers().get(0));
+            addIds.add(expectedSchemeInfo.getAdditionalIdentifiers().get(1));
+            addIds.add(expectedSchemeInfo.getAdditionalIdentifiers().get(2));
+            addIds.get(0).setHidden("true"); // COH1
+            addIds.get(1).setHidden("true"); // COH2
+            addIds.get(2).setHidden("true"); // SF id of DUNs
+            newExpSchemeInfo.setAdditionalIdentifiers(addIds);
+
+            verifyAllRegisteredSchemes(allRegisteredIdsRes, newExpSchemeInfo);
+
+            // Add/Update additional identifier [COH1]
             AdditionalSchemeInfo additionalSchemeInfo1 = additionalSchemesInfo.get(0);
             additionalSchemeInfo1.setCcsOrgId(getCCSOrgId());
             Response response = RestRequests.updateScheme(additionalSchemeInfo1);
             verifyResponseCodeForSuccess(response);
 
-            allRegisteredIdsRes = getAllRegisteredSchemesInfo(getCCSOrgId());
-            expectedSchemeInfo.getAdditionalIdentifiers().get(0).setHidden("false");
-            expectedSchemeInfo.getAdditionalIdentifiers().get(1).setHidden("true");
-            expectedSchemeInfo.getAdditionalIdentifiers().get(2).setHidden("true");
-            expectedSchemeInfo.getAdditionalIdentifiers().get(3).setHidden("true");
-            expectedSchemeInfo.getAdditionalIdentifiers().get(4).setHidden("true");
-            verifyAllRegisteredSchemes(allRegisteredIdsRes, expectedSchemeInfo);
+            // Business Rule: if one SF id exists no need to add another
 
-            // Delete SF identifier
+            allRegisteredIdsRes = getAllRegisteredSchemesInfo(getCCSOrgId());
+            newExpSchemeInfo.getAdditionalIdentifiers().get(0).setHidden("false"); // COH1
+            newExpSchemeInfo.getAdditionalIdentifiers().get(1).setHidden("true"); // COH2
+            newExpSchemeInfo.getAdditionalIdentifiers().get(2).setHidden("true"); // SF id of DUNs
+            verifyAllRegisteredSchemes(allRegisteredIdsRes, newExpSchemeInfo);
+
+            // Delete SF identifier (SF id for DUNs)
             AdditionalSchemeInfo additionalSchemeInfo2 = additionalSchemesInfo.get(2);
             additionalSchemeInfo2.setCcsOrgId(getCCSOrgId());
             response = RestRequests.deleteScheme(additionalSchemeInfo2);
             verifyResponseCodeForSuccess(response);
 
+            // Add/Update additional identifier [COH1] again
+            response = RestRequests.updateScheme(additionalSchemeInfo1);
+            verifyResponseCodeForSuccess(response);
+
             allRegisteredIdsRes = getAllRegisteredSchemesInfo(getCCSOrgId());
-            expectedSchemeInfo.getAdditionalIdentifiers().get(0).setHidden("false");
-            expectedSchemeInfo.getAdditionalIdentifiers().get(1).setHidden("true");
-            expectedSchemeInfo.getAdditionalIdentifiers().get(3).setHidden("false");
-            expectedSchemeInfo.getAdditionalIdentifiers().get(4).setHidden("true");
-            verifyAllRegisteredSchemes(allRegisteredIdsRes, expectedSchemeInfo);
+            newExpSchemeInfo.getAdditionalIdentifiers().get(0).setHidden("false"); // COH1
+            newExpSchemeInfo.getAdditionalIdentifiers().get(1).setHidden("true"); // COH2
+
+            // amend expected schemeInfo to add new expected SF Id
+            addIds.set(2, expectedSchemeInfo.getAdditionalIdentifiers().get(3));
+            newExpSchemeInfo.setAdditionalIdentifiers(addIds);
+
+            newExpSchemeInfo.getAdditionalIdentifiers().get(2).setHidden("true"); // SF id of COH1
+            verifyAllRegisteredSchemes(allRegisteredIdsRes, newExpSchemeInfo);
 
         } else {
             logger.info("Skipping this test as there is no actual data for this scenario, this test runs only " +

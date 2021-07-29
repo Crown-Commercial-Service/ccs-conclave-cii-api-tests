@@ -643,16 +643,6 @@ public class RegistryDataProvider {
                 schemeInfo.setAdditionalIdentifiers(additionalIdentifiers);
                 break;
 
-            case SALES_FORCE:
-                schemeInfo.setName("Sylvan Corporation"); // Salesforce is only for internal search
-                identifier.setId("001b000003OCdIZAA1~10046880");
-                identifier.setScheme(SchemeRegistry.getSchemeCode(SALES_FORCE));
-                identifier.setUri("/services/data/v45.0/sobjects/Account/001b000003OCdIZAA1");
-                identifier.setLegalName("Sylvan Corporation");
-                identifier.setHidden("true");
-                schemeInfo.setIdentifier(identifier);
-                break;
-
             case SFID_WITH_VALID_DUNS_INVALID_COH:
                 // Sales force return COH but it is invalid - this data may not be available in future after SF data cleansing activity
                 schemeInfo.setName("C.A. PETRIDES LIMITED");
@@ -737,12 +727,13 @@ public class RegistryDataProvider {
                 schemeInfo.setIdentifier(identifier);
                 break;
 
-            case SFID_WITH_INVALID_COH_INVALID_DUNS:
-                schemeInfo.setName("placeholder - no data available.");
-                identifier.setId("");
-                identifier.setScheme(SchemeRegistry.getSchemeCode(COMPANIES_HOUSE));
-                identifier.setLegalName("");
-                identifier.setUri("");
+            case SFID_WITH_NO_COH_NO_DUNS:
+                schemeInfo.setName("Sylvan Corporation"); // Salesforce is only for internal search
+                identifier.setId("001b000003OCdIZAA1~10046880");
+                identifier.setScheme(SchemeRegistry.getSchemeCode(SALES_FORCE));
+                identifier.setUri("/services/data/v45.0/sobjects/Account/001b000003OCdIZAA1");
+                identifier.setLegalName("Sylvan Corporation");
+                identifier.setHidden("true");
                 schemeInfo.setIdentifier(identifier);
                 break;
 
@@ -786,17 +777,22 @@ public class RegistryDataProvider {
                 schemeInfo.setContactPoint(contactPoint);
                 break;
 
+            case SALES_FORCE:
+                schemeInfo.setIdentifier(identifier);
+                break;
 
             default:
                 throw new IllegalStateException("Unexpected value: " + schemeRegistry);
         }
 
-        String ccsOrgId = RequestTestEndpoints.getRegisteredOrgId(schemeInfo.getIdentifier().getId());
-        // Delete Database entry if the Org. is already registered
-        deleteOrganisation(ccsOrgId);
-        for (Identifier id : schemeInfo.getAdditionalIdentifiers()) {
-            ccsOrgId = RequestTestEndpoints.getRegisteredOrgId(id.getId());
+        if (schemeInfo.getIdentifier().getId() != null) {
+            String ccsOrgId = RequestTestEndpoints.getRegisteredOrgId(schemeInfo.getIdentifier().getId());
+            // Delete Database entry if the Org. is already registered
             deleteOrganisation(ccsOrgId);
+            for (Identifier id : schemeInfo.getAdditionalIdentifiers()) {
+                ccsOrgId = RequestTestEndpoints.getRegisteredOrgId(id.getId());
+                deleteOrganisation(ccsOrgId);
+            }
         }
 
         return schemeInfo;

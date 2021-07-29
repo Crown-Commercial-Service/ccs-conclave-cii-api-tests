@@ -12,6 +12,8 @@ import static com.ccs.conclave.api.cii.verification.VerifyEndpointResponses.*;
 
 public class GetSchemeInfoTests extends BaseClass {
 
+    // Business Requirements: getSchemeInfo() is expected to return internal SF identifiers
+
     @Test
     public void getCompaniesHouseSchemeInfo() {
         SchemeInfo expSchemeInfo = getExpSchemeInfoWithoutSFIdentifier(COMPANIES_HOUSE);

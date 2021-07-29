@@ -44,43 +44,49 @@ public class VerifyEndpointResponses {
             Assert.assertEquals(actualSchemeInfo.getAdditionalIdentifiers().get(i).getUri(), expectedSchemeInfo.getAdditionalIdentifiers().get(i).getUri(), "Wrong Additional Identifier:Uri in response!");
         }
 
-        logger.info("Address:StreetAddress " + actualSchemeInfo.getAddress().getStreetAddress());
-        Assert.assertEquals(actualSchemeInfo.getAddress().getStreetAddress(), expectedSchemeInfo.getAddress().getStreetAddress(), "Wrong address:streetAddress in response!");
-        Assert.assertEquals(actualSchemeInfo.getAddress().getLocality(), expectedSchemeInfo.getAddress().getLocality(), "Wrong address:locality in response!");
-        logger.info("Address:region " + actualSchemeInfo.getAddress().getRegion());
-        Assert.assertEquals(actualSchemeInfo.getAddress().getRegion(), expectedSchemeInfo.getAddress().getRegion(), "Wrong address:region in response!");
-        Assert.assertEquals(actualSchemeInfo.getAddress().getPostalCode(), expectedSchemeInfo.getAddress().getPostalCode(), "Wrong address:postalCode in response!");
-        Assert.assertEquals(actualSchemeInfo.getAddress().getCountryName(), expectedSchemeInfo.getAddress().getCountryName(), "Wrong address:countryName in response!");
 
-        verifyContactPoint(expectedSchemeInfo, actualSchemeInfo);
+        verifyAddress(expectedSchemeInfo.getAddress(), actualSchemeInfo.getAddress());
+
+        verifyContactPoint(expectedSchemeInfo.getContactPoint(), actualSchemeInfo.getContactPoint());
+    }
+
+    private static void verifyAddress(Address expected, Address actual) {
+        logger.info("Address:StreetAddress " + actual.getStreetAddress());
+        Assert.assertEquals(actual.getStreetAddress(), expected.getStreetAddress(), "Wrong address:streetAddress in response!");
+        Assert.assertEquals(actual.getLocality(),expected.getLocality(), "Wrong address:locality in response!");
+        logger.info("Address:region " + actual.getRegion());
+        Assert.assertEquals(actual.getRegion(), expected.getRegion(), "Wrong address:region in response!");
+        Assert.assertEquals(actual.getPostalCode(), expected.getPostalCode(), "Wrong address:postalCode in response!");
+        Assert.assertEquals(actual.getCountryName(), expected.getCountryName(), "Wrong address:countryName in response!");
+
     }
 
     // Verify Contact point is not empty if expected
-    private static void verifyContactPoint(SchemeInfo expectedSchemeInfo, SchemeInfo actualSchemeInfo) {
-        if (!expectedSchemeInfo.getContactPoint().getName().isEmpty())
-            Assert.assertTrue(!(actualSchemeInfo.getContactPoint().getName().isEmpty()), "Wrong contactPoint:name in response!");
+    private static void verifyContactPoint(ContactPoint expected, ContactPoint actual) {
+        if (!expected.getName().isEmpty())
+            Assert.assertTrue(!(actual.getName().isEmpty()), "Wrong contactPoint:name in response!");
         else
-            Assert.assertTrue((actualSchemeInfo.getContactPoint().getName().isEmpty()), "Wrong contactPoint:name in response!");
+            Assert.assertTrue((actual.getName().isEmpty()), "Wrong contactPoint:name in response!");
 
-        if (!expectedSchemeInfo.getContactPoint().getEmail().isEmpty())
-            Assert.assertTrue(!(actualSchemeInfo.getContactPoint().getEmail().isEmpty()), "Wrong contactPoint:email in response!");
+        if (!expected.getEmail().isEmpty())
+            Assert.assertTrue(!(actual.getEmail().isEmpty()), "Wrong contactPoint:email in response!");
         else
-            Assert.assertTrue((actualSchemeInfo.getContactPoint().getEmail().isEmpty()), "Wrong contactPoint:email in response!");
+            Assert.assertTrue((actual.getEmail().isEmpty()), "Wrong contactPoint:email in response!");
 
-        if (!expectedSchemeInfo.getContactPoint().getFaxNumber().isEmpty())
-            Assert.assertTrue(!(actualSchemeInfo.getContactPoint().getFaxNumber().isEmpty()), "Wrong contactPoint:faxNumber in response!");
+        if (!expected.getFaxNumber().isEmpty())
+            Assert.assertTrue(!(actual.getFaxNumber().isEmpty()), "Wrong contactPoint:faxNumber in response!");
         else
-            Assert.assertTrue((actualSchemeInfo.getContactPoint().getFaxNumber().isEmpty()), "Wrong contactPoint:FaxNumber in response!");
+            Assert.assertTrue((actual.getFaxNumber().isEmpty()), "Wrong contactPoint:FaxNumber in response!");
 
-        if (!expectedSchemeInfo.getContactPoint().getTelephone().isEmpty())
-            Assert.assertTrue(!(actualSchemeInfo.getContactPoint().getTelephone().isEmpty()), "Wrong contactPoint:telephone in response!");
+        if (!expected.getTelephone().isEmpty())
+            Assert.assertTrue(!(actual.getTelephone().isEmpty()), "Wrong contactPoint:telephone in response!");
         else
-            Assert.assertTrue((actualSchemeInfo.getContactPoint().getTelephone().isEmpty()), "Wrong contactPoint:telephone in response!");
+            Assert.assertTrue((actual.getTelephone().isEmpty()), "Wrong contactPoint:telephone in response!");
 
-        if (!expectedSchemeInfo.getContactPoint().getUri().isEmpty())
-            Assert.assertTrue(!(actualSchemeInfo.getContactPoint().getUri().isEmpty()), "Wrong contactPoint:uri in response!");
+        if (!expected.getUri().isEmpty())
+            Assert.assertTrue(!(actual.getUri().isEmpty()), "Wrong contactPoint:uri in response!");
         else
-            Assert.assertTrue((actualSchemeInfo.getContactPoint().getUri().isEmpty()), "Wrong contactPoint:uri in response!");
+            Assert.assertTrue((actual.getUri().isEmpty()), "Wrong contactPoint:uri in response!");
     }
 
     public static void verifyGetSchemesResponse(Response response) {
@@ -128,6 +134,43 @@ public class VerifyEndpointResponses {
         // get registered schemes after post
         Response regSchemesRes = RestRequests.getRegisteredSchemesInfo(ccsOrgId);
         verifyRegisteredSchemes(regSchemesRes, expectedSchemeInfo, expectedSchemeInfo.getAdditionalIdentifiers().size());
+    }
+
+    public static void verifyPostDataMigrationEndpointResponse(SchemeInfo expectedSchemeInfo, Response response) {
+        verifyResponseCodeForCreatedResource(response);
+        PostDataMigrationEndpointResponse actualResponse = new PostDataMigrationEndpointResponse(response.getBody().as(OrganisationInfo.class));
+        Assert.assertTrue(!actualResponse.getOrganisationInfo().getOrganisationId().isEmpty(), "Not expected Post response! OrgId is empty!!");
+        ccsOrgId = actualResponse.getOrganisationInfo().getOrganisationId();
+        logger.info("CcsOrgId: " + ccsOrgId);
+
+        Identifier identifier = actualResponse.getOrganisationInfo().getIdentifier();
+        Assert.assertEquals(identifier.getId(), expectedSchemeInfo.getIdentifier().getId(), "Invalid Id returned via get registered schemes!!");
+        Assert.assertEquals(identifier.getScheme(), expectedSchemeInfo.getIdentifier().getScheme(), "Invalid scheme returned via get registered schemes!!!!");
+        Assert.assertEquals(identifier.getUri(), expectedSchemeInfo.getIdentifier().getUri(), "Invalid uri returned via get registered schemes!!!!");
+        Assert.assertEquals(identifier.getLegalName(), expectedSchemeInfo.getIdentifier().getLegalName(), "Invalid Legal name returned via get registered schemes!!!!");
+
+        Assert.assertEquals(expectedSchemeInfo.getAdditionalIdentifiers().size(), actualResponse.getOrganisationInfo().getAdditionalIdentifiers().size(), "Wrong number of additional identifiers!!!!");
+
+        // The order of additional identifier may be different in the response
+        int addIdentifierPresent = 0;
+        for (Identifier expectedAddIdentifier : expectedSchemeInfo.getAdditionalIdentifiers()) {
+            for (Identifier actualAddIdentifier : actualResponse.getOrganisationInfo().getAdditionalIdentifiers()) {
+                if (actualAddIdentifier.getId().equals(expectedAddIdentifier.getId()) &&
+                        actualAddIdentifier.getScheme().equals(expectedAddIdentifier.getScheme())) {
+                    ++addIdentifierPresent;
+                    Assert.assertEquals(actualAddIdentifier.getId(), expectedAddIdentifier.getId(), "Invalid Id for add identifier returned via get registered schemes!!!!");
+                    Assert.assertEquals(actualAddIdentifier.getScheme(), expectedAddIdentifier.getScheme(), "Invalid scheme for add identifier returned via get registered schemes!!");
+                    Assert.assertEquals(actualAddIdentifier.getUri(), expectedAddIdentifier.getUri(), "Invalid uri for add identifier returned via get registered schemes!!");
+                    Assert.assertEquals(actualAddIdentifier.getLegalName(), expectedAddIdentifier.getLegalName(), "Invalid legal name for add identifier returned via get registered schemes!!");
+                    Assert.assertEquals(actualAddIdentifier.getHidden(), expectedAddIdentifier.getHidden(), "Hidden value in add identifier is returned via get registered schemes!!");
+                }
+            }
+            Assert.assertEquals(addIdentifierPresent, 1, "Additional identifier is not returned as part of Get All Registered Schemes!!!!");
+            --addIdentifierPresent;
+        }
+
+        verifyAddress(expectedSchemeInfo.getAddress(), actualResponse.getOrganisationInfo().getAddress());
+        verifyContactPoint(expectedSchemeInfo.getContactPoint(), actualResponse.getOrganisationInfo().getContactPoint());
     }
 
     public static void verifyUpdatedScheme(String ccsOrgId, AdditionalSchemeInfo expectedAdditionalSchemeInfo) {
@@ -196,10 +239,10 @@ public class VerifyEndpointResponses {
         return ccsOrgId;
     }
 
-    public static String getCCSOrgId(Response response) {
-        PostSchemeInfoResponse actualResponse = new PostSchemeInfoResponse(response.getBody().as(OrgIdentifier.class));
-        Assert.assertTrue(!actualResponse.getOrgIdentifier().getCcsOrgId().isEmpty(), "Not expected Post response!");
-        ccsOrgId = actualResponse.getOrgIdentifier().getCcsOrgId();
+    public static String getCCSOrgIdFromDataMigrationEndpoint(Response response) {
+        PostDataMigrationEndpointResponse actualResponse = new PostDataMigrationEndpointResponse(response.getBody().as(OrganisationInfo.class));
+        Assert.assertTrue(!actualResponse.getOrganisationInfo().getOrganisationId().isEmpty(), "Not expected Post response!");
+        ccsOrgId = actualResponse.getOrganisationInfo().getOrganisationId();
         return ccsOrgId;
     }
 
