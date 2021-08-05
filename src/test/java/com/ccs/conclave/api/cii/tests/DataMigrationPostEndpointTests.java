@@ -28,7 +28,7 @@ public class DataMigrationPostEndpointTests extends BaseClass {
         String sfId = getSFId(schemeInfoWithSF.getAdditionalIdentifiers().get(0).getId());
 
         // Perform Post Operation
-        Response postSchemeRes = RestRequests.postSFInfo("sfid", sfId);
+        Response postSchemeRes = RestRequests.postSFInfo("SF-ID", sfId);
 
         // COH is Primary:true hidden:false, SF id is Primary:false, hidden:true
         SchemeInfo expectedSchemeInfo = new SchemeInfo();
