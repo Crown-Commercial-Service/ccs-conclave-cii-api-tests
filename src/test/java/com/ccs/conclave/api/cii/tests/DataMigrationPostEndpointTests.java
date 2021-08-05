@@ -42,7 +42,7 @@ public class DataMigrationPostEndpointTests extends BaseClass {
         verifyAllRegisteredSchemes(registeredSchemesRes, expectedSchemeInfo);
 
         // Duplicate check
-        postSchemeRes = RestRequests.postSFInfo("sfid", sfId);
+        postSchemeRes = RestRequests.postSFInfo("SF-ID", sfId);
         verifyResponseCodeForDuplicateResource(postSchemeRes);
         verifyAllRegisteredSchemes(registeredSchemesRes, expectedSchemeInfo);
     }
@@ -55,7 +55,7 @@ public class DataMigrationPostEndpointTests extends BaseClass {
         String sfUrn = getSFUrn(schemeInfoWithSF.getAdditionalIdentifiers().get(0).getId());
 
         // Perform Post Operation
-        Response postSchemeRes = RestRequests.postSFInfo("sfurn", sfUrn);
+        Response postSchemeRes = RestRequests.postSFInfo("SF-URN", sfUrn);
 
         // DUNS is Primary:true hidden:false, SF id is Primary:false, hidden:true
         SchemeInfo expectedSchemeInfo = new SchemeInfo();
@@ -77,7 +77,7 @@ public class DataMigrationPostEndpointTests extends BaseClass {
         String sfUrn = getSFUrn(schemeInfoWithSF.getAdditionalIdentifiers().get(0).getId());
 
         // Perform Post Operation
-        Response postSchemeRes = RestRequests.postSFInfo("sfurn", sfUrn);
+        Response postSchemeRes = RestRequests.postSFInfo("SF-URN", sfUrn);
 
         // COH is Primary:true hidden:false, DUNs is Primary:false, hidden:false, SF id is Primary:false, hidden:true
         SchemeInfo expectedSchemeInfo = new SchemeInfo();
@@ -101,7 +101,7 @@ public class DataMigrationPostEndpointTests extends BaseClass {
         String sfUrn = getSFUrn(schemeInfoWithSF.getAdditionalIdentifiers().get(0).getId());
 
         // Perform Post Operation
-        Response postSchemeRes = RestRequests.postSFInfo("sfurn", sfUrn);
+        Response postSchemeRes = RestRequests.postSFInfo("SF-URN", sfUrn);
 
         // COH is Primary:true hidden:false, DUNs is Primary:false, hidden:false, SF id is Primary:false, hidden:true
         SchemeInfo expectedSchemeInfo = new SchemeInfo();
@@ -124,7 +124,7 @@ public class DataMigrationPostEndpointTests extends BaseClass {
         String sfId = getSFId(schemeInfo.getAdditionalIdentifiers().get(0).getId());
 
         // Perform Post Operation
-        Response postSchemeRes = RestRequests.postSFInfo("sfid", sfId);
+        Response postSchemeRes = RestRequests.postSFInfo("SF-ID", sfId);
 
         // SF id is Primary:false, hidden:true
         SchemeInfo expectedSchemeInfo = new SchemeInfo();
@@ -146,7 +146,7 @@ public class DataMigrationPostEndpointTests extends BaseClass {
         String sfUrn = getSFUrn(schemeInfoWithSF.getAdditionalIdentifiers().get(0).getId());
 
         // Perform Post Operation
-        Response postSchemeRes = RestRequests.postSFInfo("sfurn", sfUrn);
+        Response postSchemeRes = RestRequests.postSFInfo("SF-URN", sfUrn);
 
         // DUN is Primary:true hidden:false, SF id is Primary:false, hidden:true
         SchemeInfo expectedSchemeInfo = new SchemeInfo();
@@ -168,7 +168,7 @@ public class DataMigrationPostEndpointTests extends BaseClass {
         String sfUrn = getSFUrn(schemeInfoWithSF.getAdditionalIdentifiers().get(0).getId());
 
         // Perform Post Operation
-        Response postSchemeRes = RestRequests.postSFInfo("sfurn", sfUrn);
+        Response postSchemeRes = RestRequests.postSFInfo("SF-URN", sfUrn);
 
         // DUN is Primary:true hidden:false, SF id is Primary:false, hidden:true
         SchemeInfo expectedSchemeInfo = new SchemeInfo();
@@ -190,7 +190,7 @@ public class DataMigrationPostEndpointTests extends BaseClass {
         String sfUrn = getSFUrn(schemeInfoWithSF.getAdditionalIdentifiers().get(0).getId());
 
         // Perform Post Operation
-        Response postSchemeRes = RestRequests.postSFInfo("sfurn", sfUrn);
+        Response postSchemeRes = RestRequests.postSFInfo("SF-URN", sfUrn);
 
         // COH is Primary:true hidden:false, SF id is Primary:false, hidden:true
         SchemeInfo expectedSchemeInfo = new SchemeInfo();
@@ -212,7 +212,7 @@ public class DataMigrationPostEndpointTests extends BaseClass {
         String sfUrn = getSFUrn(schemeInfoWithSF.getAdditionalIdentifiers().get(0).getId());
 
         // Perform Post Operation
-        Response postSchemeRes = RestRequests.postSFInfo("sfurn", sfUrn);
+        Response postSchemeRes = RestRequests.postSFInfo("SF-URN", sfUrn);
 
         // COH is Primary:true hidden:false, SF id is Primary:false, hidden:true
         SchemeInfo expectedSchemeInfo = new SchemeInfo();
@@ -234,7 +234,7 @@ public class DataMigrationPostEndpointTests extends BaseClass {
         String sfUrn = getSFUrn(schemeInfoWithSF.getAdditionalIdentifiers().get(0).getId());
 
         // Perform Post Operation
-        Response postSchemeRes = RestRequests.postSFInfo("sfurn", sfUrn);
+        Response postSchemeRes = RestRequests.postSFInfo("SF-URN", sfUrn);
 
         // DUNs is Primary:true, hidden:false;CHC is Primary:false, hidden:false; SF id is Primary:true, hidden:true
         SchemeInfo expectedSchemeInfo = new SchemeInfo();
@@ -252,16 +252,16 @@ public class DataMigrationPostEndpointTests extends BaseClass {
 
     @Test // Defect CON-1063
     public void postSFInfo_with_Invalid_QueryParam() {
-        Response postSchemeRes = RestRequests.postSFInfo("sfurn", "0014J00000Ov486QAC");
+        Response postSchemeRes = RestRequests.postSFInfo("SF-URN", "0014J00000Ov486QAC");
         verifyInvalidIdResponse(postSchemeRes);
 
-        postSchemeRes = RestRequests.postSFInfo("sfid", "106607928");
+        postSchemeRes = RestRequests.postSFInfo("SF-ID", "106607928");
         verifyInvalidIdResponse(postSchemeRes);
 
-        postSchemeRes = RestRequests.postSFInfo("sfURN", "0014J00000Ov486QAB");
+        postSchemeRes = RestRequests.postSFInfo("SF-URN", "0014J00000Ov486QAB");
         verifyBadRequestResponse(postSchemeRes);
 
-        postSchemeRes = RestRequests.postSFInfo("sfID", "10590792");
+        postSchemeRes = RestRequests.postSFInfo("SF-ID", "10590792");
         verifyBadRequestResponse(postSchemeRes);
     }
 
