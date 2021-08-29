@@ -144,7 +144,8 @@ public class GetSchemeInfoTests extends BaseClass {
         response = getSchemeInfo(COMPANIES_HOUSE, IdWithSpace);
         verifyResponseCodeForSuccess(response);
 
-        postSchemeInfo(response.asString());
+        response = postSchemeInfo(response.asString());
+        verifyResponseCodeForCreatedResource(response);
 
         response = getSchemeInfo(COMPANIES_HOUSE, IdWithSpaceAtTheEnd);
         verifyResponseCodeForDuplicateResource(response);
