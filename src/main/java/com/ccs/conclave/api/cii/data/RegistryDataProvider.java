@@ -332,7 +332,13 @@ public class RegistryDataProvider {
                 additionalIdentifiers.add(additionalIdentifier2);
                 schemeInfo.setAdditionalIdentifiers(additionalIdentifiers);
 
-                // No Salesforce identifier
+                additionalIdentifier1.setScheme(SchemeRegistry.getSchemeCode(SALES_FORCE));
+                additionalIdentifier1.setId("001b000003YNeZ5AAL~10063812");
+                additionalIdentifier1.setUri("/services/data/v45.0/sobjects/Account/001b000003YNeZ5AAL");
+                additionalIdentifier1.setLegalName("3SPACE");
+                additionalIdentifier1.setHidden("true");
+                additionalIdentifiers.add(additionalIdentifier1);
+                schemeInfo.setAdditionalIdentifiers(additionalIdentifiers);
 
                 address.setCountryName("WOODFORD GREEN");
                 address.setLocality("19-20 BOURNE COURT");
@@ -646,7 +652,7 @@ public class RegistryDataProvider {
             case SFID_WITH_VALID_DUNS_INVALID_COH:
                 // Sales force return COH but it is invalid - this data may not be available in future after SF data cleansing activity
                 schemeInfo.setName("C.A. PETRIDES LIMITED");
-                identifier.setId("114173941");
+                identifier.setId("366173537");
                 identifier.setScheme(SchemeRegistry.getSchemeCode(DUN_AND_BRADSTREET));
                 identifier.setLegalName("C.A. PETRIDES LIMITED");
                 identifier.setUri("");
@@ -687,7 +693,7 @@ public class RegistryDataProvider {
 
                 // Salesforce identifier
                 additionalIdentifier1.setScheme(SchemeRegistry.getSchemeCode(SALES_FORCE));
-                additionalIdentifier1.setId("001b000003WaB1fAAF~10055423");
+                additionalIdentifier1.setId("0014L000002mjCPQAY~10591052");
                 additionalIdentifier1.setUri("/services/data/v45.0/sobjects/Account/001b000003WaB1fAAF");
                 additionalIdentifier1.setLegalName("GREENWOOD & BELL");
                 additionalIdentifier1.setHidden("true");

@@ -15,6 +15,7 @@ import org.testng.Assert;
 import static com.ccs.conclave.api.cii.data.SchemeRegistry.*;
 import static com.ccs.conclave.api.common.StatusCodes.OK;
 import static io.restassured.RestAssured.given;
+import static io.restassured.config.RedirectConfig.redirectConfig;
 
 
 public class RestRequests extends BaseClass {
@@ -106,9 +107,11 @@ public class RestRequests extends BaseClass {
         return postToCIIAPI(endpoint, requestPayload);
     }
 
-    public static Response postSFInfo(String scheme, String id) {
-        String endpoint = ciiBaseURI + Endpoints.dataMigrationURI + "schemes=" + scheme + "&identifiers=" + id;
-        return postSFInfoToCII(endpoint);
+    public static Response postSFInfo(String scheme, String identifier) {
+        String path = getBaseURI() + Endpoints.dataMigrationURI;
+        path = path.replace("{{scheme-id}}", scheme);
+        path = path.replace("{{identifier-id}}", identifier);
+        return postSFInfoToCII(path);
     }
 
     public static Response updateScheme(AdditionalSchemeInfo additionalSchemeInfo) {
@@ -172,8 +175,15 @@ public class RestRequests extends BaseClass {
     }
 
     public static Response postSFInfoToCII(String path) {
-        Response res = given().header("x-api-key", migrationToken).header("Content-Type", "application/json")
-                .when().post(path);
+        Response res;
+
+        if (isMockTestEnabled()) {
+            res = given().header("x-api-key", apiToken).header("Content-Type", "application/json")
+                    .when().post(path);
+        } else {
+            res = given().header("Content-Type", "application/json")
+                    .header("x-api-key", migrationToken).when().post(path);
+        }
         logger.info("RestRequests::postSFInfoToCII() call with status code: " + res.getStatusCode());
         return res;
     }
@@ -253,7 +263,7 @@ public class RestRequests extends BaseClass {
     public static Response deleteAll(String path) {
         Response res;
         if (isMockTestEnabled()) {
-            res = given().header("x-api-key", apiToken ).expect().defaultParser(Parser.JSON).when().delete(path);
+            res = given().header("x-api-key", apiToken).expect().defaultParser(Parser.JSON).when().delete(path);
         } else {
             res = given().header("x-api-key", deleteToken).expect().defaultParser(Parser.JSON).when().delete(path);
         }

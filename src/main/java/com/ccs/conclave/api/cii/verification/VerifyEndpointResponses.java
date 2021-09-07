@@ -136,6 +136,18 @@ public class VerifyEndpointResponses {
         verifyRegisteredSchemes(regSchemesRes, expectedSchemeInfo, expectedSchemeInfo.getAdditionalIdentifiers().size());
     }
 
+    public static void verifyDuplicatePostDataMigrationEndptResponse(SchemeInfo expectedSchemeInfo, Response response) {
+        verifyResponseCodeForDuplicateResource(response);
+        PostSchemeInfoResponse actualResponse = new PostSchemeInfoResponse(response.getBody().as(OrgIdentifier.class));
+        Assert.assertTrue(!actualResponse.getOrgIdentifier().getCcsOrgId().isEmpty(), "Not expected Post response! OrgId is empty!!");
+        ccsOrgId = actualResponse.getOrgIdentifier().getCcsOrgId();
+        logger.info("CcsOrgId: " + actualResponse.getOrgIdentifier().getCcsOrgId());
+
+        // get registered schemes after post
+        Response regSchemesRes = RestRequests.getAllRegisteredSchemesInfo(ccsOrgId);
+        verifyAllRegisteredSchemes(regSchemesRes, expectedSchemeInfo);
+    }
+
     public static void verifyPostDataMigrationEndpointResponse(SchemeInfo expectedSchemeInfo, Response response) {
         verifyResponseCodeForCreatedResource(response);
         PostDataMigrationEndpointResponse actualResponse = new PostDataMigrationEndpointResponse(response.getBody().as(OrganisationInfo.class));
@@ -162,7 +174,6 @@ public class VerifyEndpointResponses {
                     Assert.assertEquals(actualAddIdentifier.getScheme(), expectedAddIdentifier.getScheme(), "Invalid scheme for add identifier returned via get registered schemes!!");
                     Assert.assertEquals(actualAddIdentifier.getUri(), expectedAddIdentifier.getUri(), "Invalid uri for add identifier returned via get registered schemes!!");
                     Assert.assertEquals(actualAddIdentifier.getLegalName(), expectedAddIdentifier.getLegalName(), "Invalid legal name for add identifier returned via get registered schemes!!");
-                    Assert.assertEquals(actualAddIdentifier.getHidden(), expectedAddIdentifier.getHidden(), "Hidden value in add identifier is returned via get registered schemes!!");
                 }
             }
             Assert.assertEquals(addIdentifierPresent, 1, "Additional identifier is not returned as part of Get All Registered Schemes!!!!");
